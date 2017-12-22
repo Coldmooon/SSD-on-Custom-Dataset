@@ -1,3 +1,95 @@
+# Train SSD on the Custom Dataset
+SSD is simple to use but inconvenient to modify its codes. Here in this repo, I list all the files and codes needed to be changed when using a new dataset.
+
+```
+data/VOC0712/create_data.sh
+data/VOC0712/create_list.sh
+data/VOC0712/labelmap_melon.prototxt
+examples/ssd/score_ssd_pascal.py
+examples/ssd/ssd_pascal.py
+```
+# Step 1
+Following the original instructions to compile ssd. Make sure that you can run it successfully.
+
+# Step 2: Prepare your new dataset.
+For convenience, I follow the VOC dataset format to make the new dataset. Click [here](https://drive.google.com/open?id=11nA6c_NUgV4TyuXK1roLW27K2gMDqFMZ) to download.
+`cd ~/data/VOCdevkit`
+`mkdir MELON` (say the new dataset is named MELON)
+Put all training/test images in `MELON/JPEGImages`
+Put all xml-format labels in `MELON/Annotations`
+Add all the training/val samples in `MELON/ImageSets/Main/trainval.txt`
+Add all the test samples in `MELON/ImageSets/Main/test.txt`
+
+The final directory structure is like this:
+
+```
+VOCdevkit
+├── MELON
+│   ├── Annotations
+│   ├── ImageSets
+│   │   └── Main
+│   └── JPEGImages
+├── VOC2007
+│   ├── Annotations
+│   ├── ImageSets
+│   │   ├── Layout
+│   │   ├── Main
+│   │   └── Segmentation
+│   ├── JPEGImages
+│   ├── SegmentationClass
+│   └── SegmentationObject
+└── VOC2012
+    ├── Annotations
+    ├── ImageSets
+    │   ├── Action
+    │   ├── Layout
+    │   ├── Main
+    │   └── Segmentation
+    ├── JPEGImages
+    ├── SegmentationClass
+    └── SegmentationObject
+```
+
+# Step 3: Generate LMDB file
+SSD provides two scripts to convert any VOC-format dataset to LMDB database. But before doing this, we need to take some efforts to modify necessary codes for our new dataset.
+First `cd` to the SSD root directory. Then,
+`mkdir data/MELON`
+`cp data/VOC0712/* data/MELON/`
+
+Next, modify the `data/MELON/create_list.sh`. In this script,
+Replace the extension of image file with yours.
+In the second loop, replace the keywords `VOC2007` and `VOC2012` with `MELON` since we have only dataset.
+Run `data/MELON/create_list.sh` to generate `test_name_size.txt`, `test.txt`, and `trainval.txt` in `data/MELON/`.
+
+After this, rename the `labelmap_voc.prototxt` (optional).
+`mv data/MELON/labelmap_voc.prototxt data/MELON/labelmap_melon/prototxt`
+Then edit it,
+`vim data/MELON/labelmap_melon.prototxt`
+In this file, the first block points to the background. So, don't change it. For the rest block, change their class names accordingly.
+
+For the second script `data/MELON/create_data.sh`,
+replace the keyword `dataset_name` with `MELON` and `labelmap_voc.prototxt` with `labelmap_melon.prototxt`.
+
+Now the new dataset is ready to be made. Simply run `data/MELON/create_data.sh`.
+This will create LMDB database in `~/data/VOCdevkit` and make a soft link to it in `examples/MELON/`.
+
+# Step 4: Train SSD on the new dataset.
+There are two python scripts for training and test.
+In `examples/ssd/ssd_pascal.py`.
+Change `train_data` and `test_data` to our new dataset.
+Replace all the keywords related to `voc` with `melon`.
+Change `num_classes`. Don't forget to plus one for the background.
+Set `gpus` and `batch_size` if needed.
+Modify the `num_test_image` (important!) and `test_batch_size`.
+
+All the modifications needed in `examples/ssd/score_ssd_pascal.py` are the same.
+
+# Step 5: Run
+Run `python examples/ssd/ssd_pascal.py` to train a new model.
+Use `python examples/ssd/score_ssd_pascal.py` to evaluate it.
+
+Below is the original content.
+
 # SSD: Single Shot MultiBox Detector
 
 [![Build Status](https://travis-ci.org/weiliu89/caffe.svg?branch=ssd)](https://travis-ci.org/weiliu89/caffe)
