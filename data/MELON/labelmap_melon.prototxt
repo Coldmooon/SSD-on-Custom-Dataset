@@ -1,0 +1,15 @@
+item {
+  name: "none_of_the_above"
+  label: 0
+  display_name: "background"
+}
+item {
+  name: "widemelon"
+  label: 1
+  display_name: "aeroplane"
+}
+item {
+  name: "heightmelon"
+  label: 2
+  display_name: "bicycle"
+}
