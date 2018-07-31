@@ -9,16 +9,16 @@ examples/ssd/score_ssd_pascal.py
 examples/ssd/ssd_pascal.py
 ```
 # Step 1
-Following the original instructions to compile ssd. Make sure that you can run it successfully.
+Following the original [instructions](https://github.com/weiliu89/caffe/tree/ssd) to compile ssd. Make sure that you can run it successfully.
 
 # Step 2: Prepare your new dataset.
-For convenience, I follow the VOC dataset format to make the new dataset. Click [here](https://drive.google.com/open?id=11nA6c_NUgV4TyuXK1roLW27K2gMDqFMZ) to download.
+For convenience, please follow the VOC dataset format to make the new dataset. Click [here](https://drive.google.com/open?id=11nA6c_NUgV4TyuXK1roLW27K2gMDqFMZ) to download the MELON dataset I made for this repo.
 
 ```
 cd ~/data/VOCdevkit
 ```
 ```
-mkdir MELON (say the new dataset is named MELON)
+mkdir MELON
 ```
 
 Put all training/test images in `MELON/JPEGImages`
@@ -60,7 +60,7 @@ VOCdevkit
 ```
 
 # Step 3: Generate LMDB file
-SSD provides two scripts to convert any VOC-format dataset to LMDB database. But before doing this, we need to take some efforts to modify necessary codes for our new dataset.
+SSD provides two scripts to convert any VOC-format dataset to LMDB database. But before doing this, we need to take some efforts to modify necessary codes for processing our new dataset.
 
 First `cd` to the SSD root directory. Then,
 
@@ -73,9 +73,9 @@ cp data/VOC0712/* data/MELON/
 
 Next, modify the `data/MELON/create_list.sh`. In this script,
 
-Replace the extension of image file with yours.
+Replace the extension of image file with yours (e.g., png).
 
-In the second loop, replace the keywords `VOC2007` and `VOC2012` with `MELON` since we have only dataset.
+In the second loop, replace the keywords `VOC2007` and `VOC2012` with `MELON` since we have only one dataset.
 
 Run `data/MELON/create_list.sh` to generate `test_name_size.txt`, `test.txt`, and `trainval.txt` in `data/MELON/`.
 
