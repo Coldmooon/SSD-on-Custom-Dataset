@@ -82,7 +82,7 @@ Run `data/MELON/create_list.sh` to generate `test_name_size.txt`, `test.txt`, an
 After this, rename the `labelmap_voc.prototxt` (optional).
 
 ```
-mv data/MELON/labelmap_voc.prototxt data/MELON/labelmap_melon/prototxt
+mv data/MELON/labelmap_voc.prototxt data/MELON/labelmap_melon.prototxt
 ```
 
 Then edit it,
@@ -99,7 +99,7 @@ replace the keyword `dataset_name` with `MELON` and `labelmap_voc.prototxt` with
 
 Now the new dataset is ready to be made. Simply run `data/MELON/create_data.sh`.
 
-This will create LMDB database in `~/data/VOCdevkit` and make a soft link to it in `examples/MELON/`.
+This will create LMDB database in `~/data/VOCdevkit` and make a soft link in `examples/MELON/`.
 
 # Step 4: Train SSD on the new dataset.
 
